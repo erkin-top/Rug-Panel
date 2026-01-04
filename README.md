@@ -1,3 +1,5 @@
+![Скриншот интерфейса](https://raw.githubusercontent.com/erkin-top/Rug-Panel/refs/heads/main/static/favicon.png)
+
 # 🔐 Rug-Panel
 
 **Легковесная панель управления WireGuard VPN**
