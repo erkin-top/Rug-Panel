@@ -1,5 +1,7 @@
 # 🔐 Rug-Panel
-
+<p align="center">
+  <img src="https://raw.githubusercontent.com/erkin-top/Rug-Panel/main/screen.png" alt="Лого">
+</p>
 **Lightweight WireGuard VPN Management Panel**
 
 > 🌍 **English Documentation** | **[Русская документация](README_RU.md)**
