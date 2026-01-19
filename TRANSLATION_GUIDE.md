@@ -1,103 +1,105 @@
-# Документация по системе переводов Rug-Panel
+# Rug-Panel Translation System Documentation
 
-## Обзор
+> 🌍 **English Documentation** | **[Русская документация](TRANSLATION_GUIDE_RU.md)**
 
-В проект Rug-Panel успешно интегрирована полноценная система многоязычности (i18n - internationalization), поддерживающая русский и английский языки интерфейса.
+## Overview
 
-## Архитектура
+Rug-Panel has a fully integrated multilingual system (i18n - internationalization) supporting Russian and English interface languages.
 
-### Структура файлов
+## Architecture
+
+### File Structure
 
 ```
 app/
-├── languages/          # Языковые пакеты
-│   ├── ru.json        # Русский язык
-│   └── en.json        # Английский язык
-├── i18n.py            # Модуль интернационализации
-├── config.py          # Обновлён: добавлена LANGUAGE
-└── dependencies.py    # Обновлён: интеграция переводов в шаблоны
+├── languages/          # Language packages
+│   ├── ru.json        # Russian language
+│   └── en.json        # English language
+├── i18n.py            # Internationalization module
+├── config.py          # Updated: added LANGUAGE
+└── dependencies.py    # Updated: translation integration in templates
 ```
 
-### Модуль i18n.py
+### i18n.py Module
 
-**Ключевые возможности:**
-- **Singleton pattern** с thread-safe инициализацией
-- **LRU кэширование** загруженных языков (maxsize=10)
-- **Lazy loading** языковых файлов
-- **Fallback на русский** если язык не найден
-- **Nested keys** поддержка (например, `nav.clients`)
+**Key Features:**
+- **Singleton pattern** with thread-safe initialization
+- **LRU caching** of loaded languages (maxsize=10)
+- **Lazy loading** of language files
+- **Fallback to Russian** if language not found
+- **Nested keys** support (e.g., `nav.clients`)
 
-**Основные функции:**
+**Core Functions:**
 ```python
 from app.i18n import get_i18n, t, get_translations
 
-# Получение singleton экземпляра
+# Get singleton instance
 i18n = get_i18n()
 
-# Быстрый доступ к переводам
-translated_text = t("nav.clients")  # "Клиенты" или "Clients"
+# Quick access to translations
+translated_text = t("nav.clients")  # "Clients" or "Клиенты"
 
-# Получение всех переводов для шаблонов
+# Get all translations for templates
 translations = get_translations()
 ```
 
-### Структура языковых файлов (ru.json, en.json)
+### Language File Structure (ru.json, en.json)
 
-Языковые файлы организованы логически по разделам:
+Language files are logically organized by sections:
 
 ```json
 {
   "app_name": "Rug-Panel",
   "app_description": "...",
   
-  "nav": { ... },           // Навигация
-  "login": { ... },         // Страница входа
-  "dashboard": { ... },     // Дашборд
-  "peer": { ... },          // Карточки клиентов
-  "peer_form": { ... },     // Формы клиентов
-  "peer_delete": { ... },   // Удаление клиентов
-  "server": { ... },        // Настройки сервера
-  "profile": { ... },       // Профиль пользователя
-  "users": { ... },         // Управление пользователями
-  "common": { ... },        // Общие элементы
-  "errors": { ... },        // Сообщения об ошибках
-  "time": { ... }           // Временные метки
+  "nav": { ... },           // Navigation
+  "login": { ... },         // Login page
+  "dashboard": { ... },     // Dashboard
+  "peer": { ... },          // Client cards
+  "peer_form": { ... },     // Client forms
+  "peer_delete": { ... },   // Client deletion
+  "server": { ... },        // Server settings
+  "profile": { ... },       // User profile
+  "users": { ... },         // User management
+  "common": { ... },        // Common elements
+  "errors": { ... },        // Error messages
+  "time": { ... }           // Timestamps
 }
 ```
 
-## Конфигурация
+## Configuration
 
-### Переменная окружения LANGUAGE
+### LANGUAGE Environment Variable
 
-Добавлена в `app/config.py`:
+Added to `app/config.py`:
 ```python
-# ==================== Язык интерфейса ====================
-# Поддерживаемые языки: ru (русский), en (английский)
+# ==================== Interface Language ====================
+# Supported languages: ru (Russian), en (English)
 LANGUAGE = os.getenv("LANGUAGE", "ru")
 ```
 
-### .env файл
+### .env File
 
 ```env
-# Язык интерфейса (ru - русский, en - английский)
-LANGUAGE=ru
+# Interface language (ru - Russian, en - English)
+LANGUAGE=en
 ```
 
 ### .env.example
 
-Обновлён с документацией по новой переменной.
+Updated with documentation for the new variable.
 
-## Использование в шаблонах
+## Usage in Templates
 
-### Глобальные переменные Jinja2
+### Jinja2 Global Variables
 
-В `app/dependencies.py` автоматически доступны:
+In `app/dependencies.py` automatically available:
 ```python
-templates.env.globals["t"] = get_translations()  # Словарь переводов
-templates.env.globals["lang"] = LANGUAGE         # Код языка
+templates.env.globals["t"] = get_translations()  # Translation dictionary
+templates.env.globals["lang"] = LANGUAGE         # Language code
 ```
 
-### Примеры использования в шаблонах
+### Template Examples
 
 **base.html:**
 ```html
@@ -108,14 +110,14 @@ templates.env.globals["lang"] = LANGUAGE         # Код языка
 </head>
 ```
 
-**Навигация:**
+**Navigation:**
 ```html
 <a href="/">{{ t.nav.clients }}</a>
 <a href="/server/settings">{{ t.nav.server }}</a>
 <a href="/users">{{ t.nav.users }}</a>
 ```
 
-**Формы:**
+**Forms:**
 ```html
 <label for="name">{{ t.peer_form.name }} *</label>
 <input type="text" id="name" name="name" 
@@ -123,108 +125,108 @@ templates.env.globals["lang"] = LANGUAGE         # Код языка
 <small>{{ t.peer_form.name_hint }}</small>
 ```
 
-**Кнопки:**
+**Buttons:**
 ```html
 <button class="btn btn-primary">{{ t.common.save }}</button>
 <button class="btn btn-outline">{{ t.common.cancel }}</button>
 ```
 
-## Обновлённые шаблоны
+## Updated Templates
 
-### Основные шаблоны
-- ✅ `base.html` - базовый layout, навигация
-- ✅ `login.html` - страница входа
-- ✅ `dashboard.html` - главная страница
+### Main Templates
+- ✅ `base.html` - Base layout, navigation
+- ✅ `login.html` - Login page
+- ✅ `dashboard.html` - Main page
 
-### Компоненты
-- ✅ `peers_list.html` - список клиентов
-- ✅ `peer_form.html` - форма создания клиента
+### Components
+- ✅ `peers_list.html` - Client list
+- ✅ `peer_form.html` - Client creation form
 
-### Частично обновлённые
-- ⚠️ `server_settings.html` - использует старые русские тексты
-- ⚠️ `users.html` - использует старые русские тексты
-- ⚠️ `profile.html` - использует старые русские тексты
+### Partially Updated
+- ⚠️ `server_settings.html` - Uses old Russian texts
+- ⚠️ `users.html` - Uses old Russian texts
+- ⚠️ `profile.html` - Uses old Russian texts
 
-## Тестирование
+## Testing
 
-### Тестирование с Playwright
+### Playwright Testing
 
-Протестированы оба языка:
+Both languages tested:
 
-**Русский интерфейс (LANGUAGE=ru):**
-- ✅ Страница входа
-- ✅ Навигация
-- ✅ Dashboard с статистикой
-- ✅ Модальное окно создания клиента
-- ✅ Карточки клиентов
+**Russian Interface (LANGUAGE=ru):**
+- ✅ Login page
+- ✅ Navigation
+- ✅ Dashboard with statistics
+- ✅ Client creation modal window
+- ✅ Client cards
 
-**Английский интерфейс (LANGUAGE=en):**
+**English Interface (LANGUAGE=en):**
 - ✅ Login page: "Username", "Password", "Sign In"
 - ✅ Navigation: "Clients", "Server", "Users"
 - ✅ Dashboard: "VPN Clients", "Total", "Online", "Offline"
 - ✅ Modal form: "New Client", "Client Name", "Create", "Cancel"
 - ✅ Peer cards: "IP Address", "QR Code", "Edit", "Disable"
 
-### Скриншоты
+### Screenshots
 
-Сохранены в `.playwright-mcp/`:
-- `english-interface-dashboard.png` - дашборд на английском
-- `english-interface-modal.png` - модальное окно на английском
+Saved in `.playwright-mcp/`:
+- `english-interface-dashboard.png` - Dashboard in English
+- `english-interface-modal.png` - Modal window in English
 
-## Оптимизации
+## Optimizations
 
-### Производительность
+### Performance
 
-1. **LRU кэш языков** - загруженные языки кэшируются
-2. **Singleton pattern** - один экземпляр I18n на всё приложение
-3. **Thread-safe** - безопасная работа в многопоточной среде
-4. **Lazy loading** - языки загружаются по требованию
+1. **LRU language cache** - Loaded languages are cached
+2. **Singleton pattern** - One I18n instance for entire application
+3. **Thread-safe** - Safe operation in multithreaded environment
+4. **Lazy loading** - Languages loaded on demand
 
-### Память
+### Memory
 
-- Кэш ограничен 10 языками (maxsize=10)
-- Файлы JSON компактны (~15 KB на язык)
-- Переводы загружаются один раз при старте
+- Cache limited to 10 languages (maxsize=10)
+- JSON files are compact (~15 KB per language)
+- Translations loaded once at startup
 
-## Переключение языка
+## Language Switching
 
-### Для разработки
+### For Development
 
 ```bash
-# Установить английский
-$env:LANGUAGE="en"
+# Set English
+export LANGUAGE=en
 python run.py
 
-# Установить русский
-$env:LANGUAGE="ru"
+# Set Russian
+export LANGUAGE=ru
 python run.py
 ```
 
-### Для продакшна
+### For Production
 
-Изменить в `.env`:
+Change in `.env`:
 ```env
 LANGUAGE=en
 ```
 
-И перезапустить сервер:
+And restart server:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
-## Добавление нового языка
+## Adding New Language
 
-1. Создать файл `app/languages/fr.json` (например, для французского)
-2. Скопировать структуру из `en.json` или `ru.json`
-3. Перевести все строки
-4. Установить `LANGUAGE=fr` в `.env`
-5. Перезапустить приложение
+1. Create file `app/languages/fr.json` (e.g., for French)
+2. Copy structure from `en.json` or `ru.json`
+3. Translate all strings
+4. Set `LANGUAGE=fr` in `.env`
+5. Restart application
 
-Модуль i18n автоматически обнаружит новый язык.
+The i18n module will automatically detect the new language.
 
-## Добавление новых переводов
+## Adding New Translations
 
-1. Добавить ключ в `ru.json`:
+1. Add key to `ru.json`:
 ```json
 {
   "settings": {
@@ -233,7 +235,7 @@ docker-compose restart
 }
 ```
 
-2. Добавить соответствующий перевод в `en.json`:
+2. Add corresponding translation to `en.json`:
 ```json
 {
   "settings": {
@@ -242,34 +244,38 @@ docker-compose restart
 }
 ```
 
-3. Использовать в шаблоне:
+3. Use in template:
 ```html
 <label>{{ t.settings.theme }}</label>
 ```
 
-## Известные ограничения
+## Known Limitations
 
-1. **Требуется перезапуск** - изменение языка требует перезапуска сервера
-2. **Статические тексты** - некоторые старые шаблоны ещё содержат захардкоженные русские тексты
-3. **Серверные сообщения** - сообщения об ошибках в Python коде пока на русском
+1. **Restart required** - Language change requires server restart
+2. **Static texts** - Some old templates still contain hardcoded Russian texts
+3. **Server messages** - Error messages in Python code are currently in Russian
 
 ## Roadmap
 
-### Краткосрочные улучшения
-- [ ] Обновить оставшиеся шаблоны (server_settings, users, profile)
-- [ ] Перевести серверные сообщения об ошибках
-- [ ] Добавить переключатель языка в UI
+### Short-term Improvements
+- [ ] Update remaining templates (server_settings, users, profile)
+- [ ] Translate server error messages
+- [ ] Add language switcher in UI
 
-### Долгосрочные улучшения
-- [ ] Динамическое переключение языка без перезапуска
-- [ ] Добавить больше языков (немецкий, французский, испанский)
-- [ ] Форматирование дат/чисел с учётом локали
-- [ ] Pluralization support (1 клиент / 2 клиента / 5 клиентов)
+### Long-term Improvements
+- [ ] Dynamic language switching without restart
+- [ ] Add more languages (German, French, Spanish)
+- [ ] Date/number formatting with locale support
+- [ ] Pluralization support (1 client / 2 clients / 5 clients)
 
-## Заключение
+## Conclusion
 
-Система переводов полностью функциональна и протестирована. Панель поддерживает два языка (русский и английский) с возможностью лёгкого расширения. Основные компоненты интерфейса переведены и корректно отображаются на обоих языках.
+The translation system is fully functional and tested. The panel supports two languages (Russian and English) with easy extensibility. Main interface components are translated and display correctly in both languages.
 
-**Статус:** ✅ Готово к использованию  
-**Дата:** 03 января 2026  
-**Версия:** 1.4.3
+**Status:** ✅ Ready for use  
+**Date:** January 3, 2026  
+**Version:** 1.4.3
+
+---
+
+**For Russian documentation:** [TRANSLATION_GUIDE_RU.md](TRANSLATION_GUIDE_RU.md)

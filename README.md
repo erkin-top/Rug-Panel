@@ -1,11 +1,8 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/erkin-top/Rug-Panel/main/static/favicon.png" alt="Лого">
-</p>
-
-
 # 🔐 Rug-Panel
 
-**Легковесная панель управления WireGuard VPN**
+**Lightweight WireGuard VPN Management Panel**
+
+> 🌍 **English Documentation** | **[Русская документация](README_RU.md)**
 
 [![GitHub Stars](https://img.shields.io/github/stars/erkin-top/rug-panel?style=social)](https://github.com/erkin-top/rug-panel)
 [![Docker Pulls](https://img.shields.io/docker/pulls/erkintop/rug-panel)](https://hub.docker.com/r/erkintop/rug-panel)
@@ -14,133 +11,132 @@
 [![WireGuard](https://img.shields.io/badge/WireGuard-VPN-88171a.svg)](https://www.wireguard.com/)
 
 ---
-![Скриншот интерфейса](https://raw.githubusercontent.com/erkin-top/Rug-Panel/main/screen.png)
 
-## 📋 Возможности
+## 📋 Features
 
-- ✅ **Полностью в Docker** — один контейнер, всё включено
-- 🚀 **Быстрый запуск** — одна команда для развёртывания
-- 🔄 **Простая миграция** — скопируйте конфиг и запустите
-- 📱 **HTMX интерфейс** — быстрый и отзывчивый UI
-- 🌐 **QR-коды** — для подключения мобильных устройств
-- 🔒 **JWT авторизация** — безопасный доступ через httpOnly cookies
-- 📊 **Мониторинг** — статус клиентов в реальном времени
-- 🌍 **Мультиязычность** — русский и английский интерфейс
-- ⚡ **Оптимизация** — кэширование, connection pooling, GZip
+- ✅ **Fully Dockerized** — Single container, all-inclusive
+- 🚀 **Quick Start** — Deploy with one command
+- 🔄 **Easy Migration** — Copy your config and run
+- 📱 **HTMX Interface** — Fast and responsive UI
+- 🌐 **QR Codes** — For mobile device connections
+- 🔒 **JWT Authentication** — Secure access with httpOnly cookies
+- 📊 **Monitoring** — Real-time client status
+- 🌍 **Multilingual** — Russian and English interface
+- ⚡ **Optimized** — Caching, connection pooling, GZip compression
 
 ---
 
-## 🐳 Запуск в Docker (рекомендуется)
+## 🐳 Docker Deployment (Recommended)
 
-### Требования
+### Requirements
 
-- **Docker** и **Docker Compose v2+**
-- **Linux** с ядром 5.6+ (WireGuard встроен)
+- **Docker** and **Docker Compose v2+**
+- **Linux** with kernel 5.6+ (WireGuard built-in)
 
-> 💡 На современных Linux (Ubuntu 20.04+, Debian 11+) WireGuard уже встроен в ядро — дополнительная установка не требуется.
+> 💡 On modern Linux distributions (Ubuntu 20.04+, Debian 11+), WireGuard is already integrated into the kernel — no additional installation required.
 
-### Быстрый старт
+### Quick Start
 
 ```bash
-# 1. Клонируйте репозиторий
+# 1. Clone the repository
 git clone https://github.com/erkin-top/rug-panel.git
 cd rug-panel
 
-# 2. Настройте переменные окружения
+# 2. Set up environment variables
 cp .env.example .env
 
-# 3. Сгенерируйте SECRET_KEY
+# 3. Generate SECRET_KEY
 python -c "import secrets; print(secrets.token_urlsafe(32))"
-# Или: openssl rand -base64 32
+# Or: openssl rand -base64 32
 
-# 4. Установите SECRET_KEY в .env
+# 4. Set SECRET_KEY in .env
 nano .env
 
-# 5. Запустите контейнер
+# 5. Start the container
 docker compose up -d
 ```
 
-**Панель:** `http://YOUR_SERVER_IP:8000`  
-**Логин:** `admin` / `admin`
+**Panel:** `http://YOUR_SERVER_IP:8000`  
+**Login:** `admin` / `admin`
 
-⚠️ **Смените пароль после первого входа!**
+⚠️ **Change the password after first login!**
 
-⚠️ **Сетевой интерфейс (WAN) для docker eth0**
+⚠️ **Network interface (WAN) for docker is eth0**
 
 
-### Использование готового образа из Docker Hub
+### Using Pre-built Image from Docker Hub
 
-Если не хотите собирать образ локально, используйте готовый:
+If you don't want to build the image locally, use the pre-built one:
 
 ```bash
 # docker-compose.yml
 services:
   rug-panel:
-    image: erkintop/rug-panel:latest  # или :1.0.0
-    # ... остальная конфигурация как в примере
+    image: erkintop/rug-panel:latest  # or :1.0.0
+    # ... rest of the configuration as in the example
 ```
 
 ```bash
-# Запуск
+# Start
 docker compose up -d
 ```
 
 
-### Управление контейнером
+### Container Management
 
 ```bash
-docker compose ps              # Статус
-docker compose logs -f         # Логи
-docker compose restart         # Перезапуск
-docker compose down            # Остановка
-docker compose up -d --build   # Пересборка
+docker compose ps              # Status
+docker compose logs -f         # Logs
+docker compose restart         # Restart
+docker compose down            # Stop
+docker compose up -d --build   # Rebuild
 docker compose exec rug-panel /bin/sh   # Shell
-docker compose exec rug-panel wg show   # WireGuard статус
+docker compose exec rug-panel wg show   # WireGuard status
 ```
 
 ---
 
-## 💻 Ручной запуск (без Docker)
+## 💻 Manual Setup (Without Docker)
 
-### Требования
+### Requirements
 
 - **Python 3.11+**
-- **Linux** с установленным WireGuard
-- Права `sudo` для управления WireGuard
+- **Linux** with WireGuard installed
+- `sudo` privileges for WireGuard management
 
-### Установка
+### Installation
 
 ```bash
-# 1. Установите WireGuard
+# 1. Install WireGuard
 sudo apt install wireguard wireguard-tools   # Ubuntu/Debian
 sudo dnf install wireguard-tools             # Fedora/RHEL
 
-# 2. Создайте виртуальное окружение
+# 2. Create virtual environment
 python -m venv venv
 source venv/bin/activate
 
-# Или через conda:
+# Or with conda:
 conda create -n rugEnv python=3.11
 conda activate rugEnv
 
-# 3. Установите зависимости
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Настройте переменные
+# 4. Configure environment variables
 cp .env.example .env
-nano .env  # Установите SECRET_KEY
+nano .env  # Set SECRET_KEY
 
-# 5. Запустите
+# 5. Run
 python run.py
 ```
 
-**Панель:** `http://localhost:8000`
+**Panel:** `http://localhost:8000`
 
-> ⚠️ **Windows/macOS:** Панель управления работает, но WireGuard VPN требует Linux. Для полноценной работы используйте Docker на Linux сервере.
+> ⚠️ **Windows/macOS:** The management panel works, but WireGuard VPN requires Linux. For full functionality, use Docker on a Linux server.
 
 ---
 
-## 🔄 Миграция существующего конфига
+## 🔄 Migrating Existing Configuration
 
 ```bash
 mkdir -p ./data
@@ -148,130 +144,131 @@ cp /etc/wireguard/wg0.conf ./data/wg0.conf
 docker compose up -d
 ```
 
-Все клиенты автоматически импортируются.
+All clients are automatically imported.
 
 ---
 
-## ⚙️ Переменные окружения
+## ⚙️ Environment Variables
 
-| Переменная | По умолчанию | Описание |
-|-----------|--------------|----------|
-| `SECRET_KEY` | ⚠️ **ОБЯЗАТЕЛЬНО** | JWT ключ шифрования |
-| `PANEL_PORT` | 8000 | Порт веб-панели |
-| `WG_PORT` | 51820 | Порт WireGuard UDP |
-| `WG_INTERFACE` | wg0 | Имя интерфейса WireGuard |
-| `WG_SERVER_ENDPOINT` | *(автодетект)* | Внешний IP/домен сервера (приоритет над автодетектом) |
-| `DEFAULT_DNS` | 77.88.8.8, 8.8.8.8 | DNS для клиентов |
-| `DEFAULT_ALLOWED_IPS` | 0.0.0.0/0, ::/0 | Маршруты для клиентов |
-| `DEFAULT_PERSISTENT_KEEPALIVE` | 25 | Keepalive интервал (сек) |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | 1440 | Время жизни JWT (24ч) |
-| `DEBUG` | false | Режим отладки |
-| `LOG_LEVEL` | INFO | Уровень логирования |
-| `CONFIG_CACHE_TTL` | 5 | Кэш конфига (сек) |
-| `STATUS_CACHE_TTL` | 2 | Кэш статусов (сек) |
-| `QR_CACHE_SIZE` | 100 | Размер LRU кэша QR |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SECRET_KEY` | ⚠️ **REQUIRED** | JWT encryption key |
+| `PANEL_PORT` | 8000 | Web panel port |
+| `WG_PORT` | 51820 | WireGuard UDP port |
+| `WG_INTERFACE` | wg0 | WireGuard interface name |
+| `WG_SERVER_ENDPOINT` | *(auto-detect)* | External IP/domain of server (overrides auto-detection) |
+| `DEFAULT_DNS` | 77.88.8.8, 8.8.8.8 | DNS servers for clients |
+| `DEFAULT_ALLOWED_IPS` | 0.0.0.0/0, ::/0 | Routes for clients |
+| `DEFAULT_PERSISTENT_KEEPALIVE` | 25 | Keepalive interval (seconds) |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | 1440 | JWT lifetime (24h) |
+| `DEBUG` | false | Debug mode |
+| `LOG_LEVEL` | INFO | Logging level |
+| `CONFIG_CACHE_TTL` | 5 | Config cache TTL (seconds) |
+| `STATUS_CACHE_TTL` | 2 | Status cache TTL (seconds) |
+| `QR_CACHE_SIZE` | 100 | QR code LRU cache size |
+| `LANGUAGE` | ru | Interface language (ru/en) |
 
-> 💡 **WG_SERVER_ENDPOINT** — используйте для фиксации домена/IP сервера. Если задан, автоопределённый IP НЕ будет затирать это значение при генерации конфигов клиентов.
+> 💡 **WG_SERVER_ENDPOINT** — Use this to fix the server domain/IP. If set, auto-detected IP will NOT override this value when generating client configs.
 
 ---
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 rug-panel/
-├── app/                      # FastAPI приложение
-│   ├── main.py               # Точка входа
-│   ├── config.py             # Конфигурация
-│   ├── wireguard.py          # WireGuard менеджер
-│   ├── routes/               # API роуты
-│   └── templates/            # Jinja2 шаблоны
+├── app/                      # FastAPI application
+│   ├── main.py               # Entry point
+│   ├── config.py             # Configuration
+│   ├── wireguard.py          # WireGuard manager
+│   ├── routes/               # API routes
+│   └── templates/            # Jinja2 templates
 ├── docker/
-│   ├── Dockerfile            # Образ контейнера
-│   └── entrypoint.sh         # Скрипт запуска
-├── static/                   # CSS стили
+│   ├── Dockerfile            # Container image
+│   └── entrypoint.sh         # Startup script
+├── static/                   # CSS styles
 ├── data/                     # wg0.conf, panel.db
 ├── docker-compose.yml
-├── run.py                    # Локальный запуск
+├── run.py                    # Local startup
 └── requirements.txt
 ```
 
 ---
 
-## 📱 Подключение клиентов
+## 📱 Connecting Clients
 
-### Создание клиента
+### Creating a Client
 
-1. Откройте панель → войдите
-2. Нажмите **"Добавить клиента"**
-3. Заполните форму → **"Создать"**
-4. Скачайте конфиг или отсканируйте QR-код
+1. Open the panel → log in
+2. Click **"Add Client"**
+3. Fill in the form → **"Create"**
+4. Download config or scan QR code
 
-### Мобильные устройства
+### Mobile Devices
 
-1. Установите WireGuard: [Android](https://play.google.com/store/apps/details?id=com.wireguard.android) / [iOS](https://apps.apple.com/app/wireguard/id1441195209)
-2. Отсканируйте QR-код из панели
+1. Install WireGuard: [Android](https://play.google.com/store/apps/details?id=com.wireguard.android) / [iOS](https://apps.apple.com/app/wireguard/id1441195209)
+2. Scan QR code from the panel
 
-### Компьютеры
+### Computers
 
 ```bash
 # Linux
 sudo mv client.conf /etc/wireguard/wg-client.conf
 sudo wg-quick up wg-client
 
-# Windows/macOS — импортируйте .conf в приложение WireGuard
+# Windows/macOS — Import .conf in WireGuard app
 ```
 
 ---
 
-## 🐛 Устранение проблем
+## 🐛 Troubleshooting
 
-### WireGuard не запускается в Docker
+### WireGuard Not Starting in Docker
 
 ```bash
-# Проверьте версию ядра (должно быть 5.6+)
+# Check kernel version (should be 5.6+)
 uname -r
 
-# Проверьте модуль WireGuard
+# Check WireGuard module
 sudo modprobe wireguard
 lsmod | grep wireguard
 
-# Если ядро < 5.6 — обновите систему
+# If kernel < 5.6 — Update system
 sudo apt update && sudo apt upgrade
 ```
 
-### Клиенты не подключаются
+### Clients Cannot Connect
 
 ```bash
-# Откройте порт WireGuard
+# Open WireGuard port
 sudo ufw allow 51820/udp
 
-# Проверьте IP forwarding
-sysctl net.ipv4.ip_forward  # Должно быть 1
+# Check IP forwarding
+sysctl net.ipv4.ip_forward  # Should be 1
 
-# Проверьте статус WireGuard
+# Check WireGuard status
 docker compose exec rug-panel wg show
 ```
 
 ---
 
-## 🔐 Безопасность
+## 🔐 Security
 
-- Пароли хэшируются **PBKDF2-HMAC-SHA256** (100,000 итераций)
-- JWT токен в **httpOnly cookie** (защита от XSS)
-- **SameSite=Lax** для защиты от CSRF
-- Автоматические бэкапы конфигурации
+- Passwords hashed with **PBKDF2-HMAC-SHA256** (100,000 iterations)
+- JWT token in **httpOnly cookie** (XSS protection)
+- **SameSite=Lax** for CSRF protection
+- Automatic configuration backups
 
-**Рекомендации:**
-1. Смените пароль admin после установки
-2. Установите уникальный `SECRET_KEY`
-3. Используйте HTTPS через reverse proxy (nginx/Caddy)
-4. Ограничьте доступ через firewall
+**Recommendations:**
+1. Change admin password after installation
+2. Set unique `SECRET_KEY`
+3. Use HTTPS via reverse proxy (nginx/Caddy)
+4. Restrict access through firewall
 
 ---
 
-## 🏗️ Технологии
+## 🏗️ Technologies
 
-| Компонент | Технология |
+| Component | Technology |
 |-----------|------------|
 | Backend | FastAPI + Python 3.11 |
 | Frontend | Jinja2 + HTMX |
@@ -282,33 +279,34 @@ docker compose exec rug-panel wg show
 
 ---
 
-## 📄 Лицензия и Attribution
+## 📄 License and Attribution
 
-Этот проект распространяется под лицензией **Apache License 2.0**.
+This project is licensed under the **Apache License 2.0**.
 
 **Copyright © 2026 [Erkin](https://erkin.top)**
 
-При использовании или модификации этого проекта, пожалуйста:
-- Сохраняйте ссылку на автора ([erkin.top](https://erkin.top))
-- Указывайте оригинальный репозиторий: [github.com/erkin-top/rug-panel](https://github.com/erkin-top/rug-panel)
-- Соблюдайте условия лицензии Apache 2.0 (см. [LICENSE](LICENSE) и [NOTICE](NOTICE))
+When using or modifying this project, please:
+- Preserve the link to the author ([erkin.top](https://erkin.top))
+- Reference the original repository: [github.com/erkin-top/rug-panel](https://github.com/erkin-top/rug-panel)
+- Comply with the Apache 2.0 license terms (see [LICENSE](LICENSE) and [NOTICE](NOTICE))
 
-Подробности лицензии:
-- [LICENSE](LICENSE) — Полный текст Apache License 2.0
-- [NOTICE](NOTICE) — Информация об авторских правах и атрибуции
+License details:
+- [LICENSE](LICENSE) — Full text of Apache License 2.0
+- [NOTICE](NOTICE) — Copyright and attribution information
 
-**Контакты:**
-- 🌐 Сайт: [erkin.top](https://erkin.top)
+**Contacts:**
+- 🌐 Website: [erkin.top](https://erkin.top)
 - 🐙 GitHub: [github.com/erkin-top/rug-panel](https://github.com/erkin-top/rug-panel)
 - 🐳 Docker Hub: [hub.docker.com/r/erkintop/rug-panel](https://hub.docker.com/r/erkintop/rug-panel)
 
 ---
 
-## 📚 Дополнительная документация
+## 📚 Additional Documentation
 
-- [🚀 QUICKSTART.md](QUICKSTART.md) - Быстрый старт за 5 минут
-- [🌐 TRANSLATION_GUIDE.md](TRANSLATION_GUIDE.md) - Руководство по переводам
+- [🚀 QUICKSTART.md](QUICKSTART.md) - Quick Start in 5 Minutes
+- [🌐 TRANSLATION_GUIDE.md](TRANSLATION_GUIDE.md) - Translation Guide
+- [🇷🇺 Русская документация](README_RU.md) - Russian Documentation
 
 ---
 
-**Разработано с ❤️ для простого управления WireGuard**
+**Developed with ❤️ for simple WireGuard management**

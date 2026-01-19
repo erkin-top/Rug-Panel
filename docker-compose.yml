@@ -14,13 +14,13 @@ services:
       - "8000:8000/tcp"
       - "51820:51820/udp"
     environment:
-      # Сервер
+      # Server
       - HOST=0.0.0.0
       - PORT=8000
       - DEBUG=false
       - LOG_LEVEL=INFO
 
-      # Безопасность: ОБЯЗАТЕЛЬНО заменить SECRET_KEY на безопасное значение
+      # Security: MUST replace SECRET_KEY with a strong secret value
       - SECRET_KEY=CHANGE_ME_REPLACE_WITH_STRONG_SECRET
       - ACCESS_TOKEN_EXPIRE_MINUTES=1440
 
@@ -32,21 +32,21 @@ services:
       - DEFAULT_ALLOWED_IPS=0.0.0.0/0, ::/0
       - DEFAULT_PERSISTENT_KEEPALIVE=25
 
-      # Явно укажите endpoint, если хотите фиксированный внешний адрес
+      # Explicitly specify endpoint if you want a fixed external address
       - WG_SERVER_ENDPOINT=
 
-      # Пути внутри контейнера
+      # Paths inside container
       - DATA_DIR=/app/data
       - DATABASE_PATH=/app/data/panel.db
 
-      # Кэш
+      # Cache
       - CONFIG_CACHE_TTL=5
       - STATUS_CACHE_TTL=2
       - QR_CACHE_SIZE=100
 
-      # Версия/язык
+      # Version/Language
       - PANEL_VERSION=1.4.3
-      - LANGUAGE=ru
+      - LANGUAGE=en
 
     sysctls:
       - net.ipv4.ip_forward=1
@@ -84,8 +84,8 @@ networks:
           gateway: 10.42.42.1
         - subnet: fdcc:ad94:bacf:61a3::/64
 
-# Примечания:
-# - Перед запуском замените `SECRET_KEY` на безопасное значение, например
+# Notes:
+# - Before running, replace `SECRET_KEY` with a secure value, e.g.
 #   `python -c "import secrets; print(secrets.token_urlsafe(32))"`.
-#   Или: openssl rand -base64 32
-# - Файлы данных сохраняются в локальной папке `./data`.
+#   Or: openssl rand -base64 32
+# - Data files are saved in local `./data` folder.
